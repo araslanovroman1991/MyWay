@@ -1,2 +1,0 @@
-# MyWay
-My skills
