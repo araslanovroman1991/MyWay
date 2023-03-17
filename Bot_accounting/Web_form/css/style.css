@@ -1,0 +1,44 @@
+{
+    background_color: #f8f8e8
+}
+
+body {
+    min-height: 100vh;
+}
+
+
+
+
+h1, h2 {
+    color: #770077;
+    font-size: 16px;
+    font-style: oblique;
+    line-height: 14px;
+}
+
+h2 {
+    font-size: 16px;
+    color: #770077;
+    font-weight: bold;
+    font-style: italic;
+}
+
+p {
+    color: #770077;
+    font-size: 16px;
+    font-style: oblique;
+    line-height: 16px;
+    text-align: left;
+}
+
+.menu {
+    color: black;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    list-style-type: none;
+}
+
+.img {
+
+}

@@ -1,0 +1,125 @@
+<!--https://formden.com/blog/date-picker-->
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+<link rel="stylesheet" href="css/bootstrap-iso.css"/>
+<link rel="stylesheet" href="css/bootstrap-datepicker3.css"/>
+</head>
+
+<body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap-datepicker.min.js"></script>
+<div class="bootstrap-iso">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-3 col-sm-6 col-xs-12">
+        <form id="send_to_tg">
+
+          <div class="form-group">
+            <label class="control-label" for="date">Дата</label>
+            <input class="form-control" id="date" name="date" placeholder="Выберите дату" type="text"/>
+          </div>
+          
+          <div class="form-group">
+            <label class="control-label" for="adress">Объект</label>
+            <select class="form-control" id="adress" name="adress">
+                <option value="adress_0" disabled selected>Выберите адрес...</option>
+                <option value="adress_1">г.Уральск, Жана Орда д.21 кв.35</option>
+                <option value="adress_2">г.Уральск, Кунаева д.61 кв.47</option>
+                <option value="adress_3">г.Уральск, Кунаева д.65 кв.35</option>
+                <option value="adress_4">г.Уральск, мкр.Строитель д.1/3 кв.33</option>
+                <option value="adress_5">г.Уральск, пр.Абая д.71/1 кв.74</option>
+                <option value="adress_5">г.Уральск, Хиуаз Доспанова д.69 кв.17</option>
+
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="type_action">Тип действия</label>
+            <select class="form-control" id="type_action" name="type_action">
+                <option value="type_action_0" disabled selected>Выберите тип...</option>
+                <option value="type_action_1">Реклама</option>
+                <option value="type_action_2">Заселение клиента</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="amount">Сумма</label>
+            <input class="form-control" id="amount" name="amount" placeholder="Введите сумму" type="number"/>
+          </div>
+
+          <div class="form-group">  
+            <button class="btn btn-primary" name="submit_all" id="submit_all" type="button">Сохранить</button>
+          </div>
+
+        </form>
+      </div>
+    </div>  
+  </div>
+</div>
+
+<script>
+  /* Запускаем datetimepicker */
+  $(document).ready(function(){
+    let date_input=$('input[name="date"]');
+    let container=$('.bootstrap-iso form').length>0 ? $('.bootstrap-iso form').parent() : "body"; 
+    let options={
+      format: 'dd.mm.yyyy',
+      container: container,
+      todayHighlight: true,
+      autoclose: true,
+    };
+    date_input.datepicker(options);
+  })
+  /* Сценарий при нажатии на кнопку Сохранить */
+  /* Производим валидацию заполненных полей */
+  submit_all.onclick= function (){
+  let massiv=[];
+  /* Валидируем поле adress */
+  let adress_value = document.getElementById('adress');
+  adress_value = adress_value.options[adress_value.selectedIndex].text;
+  let result_adress_value = (adress_value=="Выберите адрес..." ? 0:1);
+  massiv.push({"Объект":result_adress_value});
+  /* Валидируем поле type_action */
+  let type_action_value = document.getElementById('type_action');
+  type_action_value = type_action_value.options[type_action_value.selectedIndex].text;
+  let result_type_action_value = (type_action_value=="Выберите тип..." ? 0:1);
+  massiv.push({"Тип действия":result_type_action_value});
+  /* Валидируем поле amount */
+  let amount_value = document.getElementById('amount').value;
+  let result_amount_value= (amount_value.length>0) ? 1:0;
+  massiv.push({"Сумма":result_amount_value});
+  /* Валидируем поле date */
+  let date_value = document.getElementById('date').value;
+  let result_date_value= (date_value.length==10) ? 1:0;
+  massiv.push({"Дата":result_date_value});
+  /* Считаем сумму значений в массиве, указываем на поля, которые нужно заполнить */
+  sum=0
+  massv_keys=[]
+  massiv.forEach(element => {sum=sum + Number(Object.values(element)[0]);
+  if (Number(Object.values(element)[0])==0){massv_keys.push(Object.keys(element)[0]);}
+  });
+  /* Говорим пользователю, что он заполнил форму неккоректно*/
+  if (sum<massiv.length){alert("Пожалуйста, заполните корректно следующие поля: \n"+massv_keys.join("\n"));}
+  /* Просим убедиться пользователя, что данные корректны и он готов отправить форму в БД*/
+  else {
+    let label_nm_msv=[]
+    let id_nm_msv=[]
+    let form=document.forms["send_to_tg"]
+    let label_nm=form.querySelectorAll('label');
+    let id_nm=form.querySelectorAll('*[id]:not([id="submit_all"])');
+    label_nm.forEach(element =>label_nm_msv.push(element.textContent));
+    id_nm.forEach(element =>{ (element.tagName === 'SELECT') ? id_nm_msv.push(element.options[element.selectedIndex].text):id_nm_msv.push(element.value)});
+    let result = label_nm_msv.map((elem, index) => `${elem}: ${id_nm_msv[index]}`);
+    let form_reslt=confirm("Пожалуйста, еще раз внимательно проверьте заполненные данные:\n"+result.join("\n"));
+    /* Говорим спасибо и очищаем форму*/
+    if (form_reslt==true){
+      alert("Спасибо, данные сохранены на сервер");
+      document.getElementById("send_to_tg").reset();
+    }
+    else {}
+  }
+  };
+</script>
+</body>
