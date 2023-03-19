@@ -62,6 +62,7 @@
 </div>
 
 <script>
+  Telegram.WebApp.ready();
   /* Запускаем datetimepicker */
   $(document).ready(function(){
     let date_input=$('input[name="date"]');
@@ -118,7 +119,6 @@
     /* Говорим спасибо, отправляем данные, очищаем форму*/
     if (form_reslt==true){
       let js='{"date":"'+id_nm_msv[0]+'",' + '"adress":"' + id_nm_msv[1]  +'",' + '"type_action":"' + id_nm_msv[2]  +'",' + '"amount":"' + id_nm_msv[3]  +'"' +'}';
-      Telegram.WebApp.ready();
       alert("Спасибо, данные сохранены на сервер");
       document.getElementById("send_to_tg").reset();
     }
