@@ -5,6 +5,7 @@
 <head>
 <link rel="stylesheet" href="css/bootstrap-iso.css"/>
 <link rel="stylesheet" href="css/bootstrap-datepicker3.css"/>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
@@ -114,8 +115,10 @@
     id_nm.forEach(element =>{ (element.tagName === 'SELECT') ? id_nm_msv.push(element.options[element.selectedIndex].text):id_nm_msv.push(element.value)});
     let result = label_nm_msv.map((elem, index) => `${elem}: ${id_nm_msv[index]}`);
     let form_reslt=confirm("Пожалуйста, еще раз внимательно проверьте заполненные данные:\n"+result.join("\n"));
-    /* Говорим спасибо и очищаем форму*/
+    /* Говорим спасибо, отправляем данные, очищаем форму*/
     if (form_reslt==true){
+      let js='{"date":"'+id_nm_msv[0]+'",' + '"adress":"' + id_nm_msv[1]  +'",' + '"type_action":"' + id_nm_msv[2]  +'",' + '"amount":"' + id_nm_msv[3]  +'"' +'}';
+      Telegram.WebApp.ready();
       alert("Спасибо, данные сохранены на сервер");
       document.getElementById("send_to_tg").reset();
     }
