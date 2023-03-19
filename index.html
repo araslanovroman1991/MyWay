@@ -77,7 +77,6 @@
   /* Сценарий при нажатии на кнопку Сохранить */
   /* Производим валидацию заполненных полей */
   submit_all.onclick= function (){
-  window.Telegram.WebApp.ready();
   let massiv=[];
   /* Валидируем поле adress */
   let adress_value = document.getElementById('adress');
@@ -118,6 +117,7 @@
     let form_reslt=confirm("Пожалуйста, еще раз внимательно проверьте заполненные данные:\n"+result.join("\n"));
     /* Говорим спасибо, отправляем данные, очищаем форму*/
     if (form_reslt==true){
+      window.Telegram.WebApp.ready();
       let js='{"date":"'+id_nm_msv[0]+'",' + '"adress":"' + id_nm_msv[1]  +'",' + '"type_action":"' + id_nm_msv[2]  +'",' + '"amount":"' + id_nm_msv[3]  +'"' +'}';
       window.Telegram.WebApp.sendData(js);
       alert("Спасибо, данные сохранены на сервер");
