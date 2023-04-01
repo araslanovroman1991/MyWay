@@ -58,7 +58,7 @@
 
           <div class="form-group">
             <label class="control-label" for="phone">Номер телефона</label>
-            <input class="phone" id="phone" name="phone" placeholder="Введите Номер телефона" type="text"/>
+            <input class="form-control" id="phone" name="phone" placeholder="Введите Номер телефона" type="text"/>
           </div>
 
           <div class="form-group">  
@@ -84,7 +84,7 @@
     };
     date_input.datepicker(options);
   })
-  $(".phone").mask("+7(999)999-9999");
+  $('input[name="phone"]').mask("+7(999)999-9999");
   /* Сценарий при нажатии на кнопку Сохранить */
   /* Производим валидацию заполненных полей */
   submit_all.onclick= function (){
@@ -107,6 +107,10 @@
   let date_value = document.getElementById('date').value;
   let result_date_value= (date_value.length==10) ? 1:0;
   massiv.push({"Дата":result_date_value});
+  /* Валидируем поле phone */
+  let phone_value = document.getElementById('phone').value;
+  let result_phone_value= (phone_value.length==15) ? 1:0;
+  massiv.push({"Номер телефона":result_phone_value});  
   /* Считаем сумму значений в массиве, указываем на поля, которые нужно заполнить */
   sum=0
   massv_keys=[]
