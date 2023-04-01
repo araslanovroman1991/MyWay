@@ -11,6 +11,8 @@
 <body>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script type="text/javascript" src="js/bootstrap-datepicker.min.js"></script>
+<script type="text/javascript" src="js/jquery-2.2.4.js"></script>
+<script type="text/javascript" src="js/jquery.maskedinput.min.js"></script>
 <div class="bootstrap-iso">
   <div class="container-fluid">
     <div class="row">
@@ -54,6 +56,11 @@
             <input class="form-control" id="amount" name="amount" placeholder="Введите сумму" type="number"/>
           </div>
 
+          <div class="form-group">
+            <label class="control-label" for="phone">Номер телефона</label>
+            <input class="phone" id="phone" name="phone" placeholder="Введите Номер телефона" type="text"/>
+          </div>
+
           <div class="form-group">  
             <button class="btn btn-primary" name="submit_all" id="submit_all" type="button">Сохранить</button>
           </div>
@@ -77,6 +84,7 @@
     };
     date_input.datepicker(options);
   })
+  $(".phone").mask("+7(999)999-9999");
   /* Сценарий при нажатии на кнопку Сохранить */
   /* Производим валидацию заполненных полей */
   submit_all.onclick= function (){
