@@ -40,13 +40,13 @@
 
           <div class="form-group">
             <label class="control-label" for="type_action">Тип действия</label>
-            <select class="form-control" id="type_action" name="type_action">
+            <select class="form-control" id="type_action" name="type_action"  onchange="showDiv()">
                 <option value="type_action_0" disabled selected>Выберите тип...</option>
-                <option value="type_action_1">Реклама</option>
-                <option value="type_action_2">Заселение клиента</option>
+                <option value="type_action_1">Заселение клиента</option>
+                <option value="type_action_2">Реклама</option> 
                 <option value="type_action_3">Арендная плата</option>
-                <option value="type_action_4">Комиссия Booking</option>
-                <option value="type_action_5">Коммунальные платежи</option>
+                <option value="type_action_4">Коммунальные платежи</option>
+                <option value="type_action_5">Комиссия Booking</option> 
             </select>
           </div>
 
@@ -55,7 +55,21 @@
             <input class="form-control" id="amount" name="amount" placeholder="Введите сумму" type="number"/>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="name_client_form">
+            <label class="control-label" for="name_client">Имя клиента</label>
+            <input class="form-control" id="name_client" name="name_client" placeholder="Введите имя клиента" type="text" maxlength="20"/>
+          </div>
+
+          <div class="form-group" id="sex_client_form">
+            <label class="control-label" for="sex_client">Пол клиента</label>
+            <select class="form-control" id="sex_client" name="sex_client">
+                <option value="sex_client_0" disabled selected>Выберите пол...</option>
+                <option value="sex_client_1">Мужской</option>
+                <option value="sex_client_2">Женский</option>
+            </select>
+          </div>
+          
+          <div class="form-group" id="phone_form">
             <label class="control-label" for="phone">Номер телефона</label>
             <input class="form-control" id="phone" name="phone" placeholder="Введите Номер телефона" type="text"/>
           </div>
@@ -71,6 +85,10 @@
 </div>
 
 <script>
+  /* Скрываем формы */
+  $('div[id="phone_form"]').hide();
+  $('div[id="name_client_form"]').hide();
+  $('div[id="sex_client_form"]').hide();
   /* Запускаем datetimepicker */
   $(document).ready(function(){
     let date_input=$('input[name="date"]');
@@ -83,7 +101,21 @@
     };
     date_input.datepicker(options);
   });
+  /* Формируем маску для поля phone */
   $('input[name="phone"]').mask("+7(999)999-9999");
+  /* Обработчик для сценариев появления дополнительных полей при выборе значения "Заселение клиента" */
+  function showDiv() {
+    if (document.getElementById('type_action').value == 'type_action_1') {
+      $('div[id="phone_form"]').show();
+      $('div[id="name_client_form"]').show();
+      $('div[id="sex_client_form"]').show();
+    }
+    else {
+      $('div[id="phone_form"]').hide();
+      $('div[id="name_client_form"]').hide();
+      $('div[id="sex_client_form"]').hide();
+    }
+  }
   /* Сценарий при нажатии на кнопку Сохранить */
   /* Производим валидацию заполненных полей */
   submit_all.onclick= function (){
@@ -106,10 +138,22 @@
   let date_value = document.getElementById('date').value;
   let result_date_value= (date_value.length==10) ? 1:0;
   massiv.push({"Дата":result_date_value});
+  /* Валидируем поле name_client */
+  let name_client_value = document.getElementById('name_client').value;
+  let result_name_client_value= (name_client_value.length>0) ? 1:0;
+  if (document.getElementById('type_action').value == 'type_action_1') {
+    massiv.push({"Имя клиента":result_name_client_value});}
   /* Валидируем поле phone */
   let phone_value = document.getElementById('phone').value;
   let result_phone_value= (phone_value.length==15) ? 1:0;
-  massiv.push({"Номер телефона":result_phone_value});  
+  if (document.getElementById('type_action').value == 'type_action_1') {
+    massiv.push({"Номер телефона":result_phone_value});}  
+  /* Валидируем поле sex_client */
+  let sex_client_value = document.getElementById('sex_client');
+  sex_client_value = sex_client_value.options[sex_client_value.selectedIndex].text;
+  let result_sex_client_value = (sex_client_value=="Выберите пол..." ? 0:1);
+  if (document.getElementById('type_action').value == 'type_action_1') {
+    massiv.push({"Пол клиента":result_sex_client_value});}
   /* Считаем сумму значений в массиве, указываем на поля, которые нужно заполнить */
   sum=0
   massv_keys=[]
@@ -124,7 +168,7 @@
     let id_nm_msv=[]
     let form=document.forms["send_to_tg"]
     let label_nm=form.querySelectorAll('label');
-    let id_nm=form.querySelectorAll('*[id]:not([id="submit_all"])');
+    let id_nm=form.querySelectorAll('*[id]:not([id="submit_all"]):not([class="form-group"])');
     label_nm.forEach(element =>label_nm_msv.push(element.textContent));
     id_nm.forEach(element =>{ (element.tagName === 'SELECT') ? id_nm_msv.push(element.options[element.selectedIndex].text):id_nm_msv.push(element.value)});
     let result = label_nm_msv.map((elem, index) => `${elem}: ${id_nm_msv[index]}`);
@@ -132,7 +176,8 @@
     /* Говорим спасибо, отправляем данные, очищаем форму*/
     if (form_reslt==true){
       window.Telegram.WebApp.ready();
-      let js='{"date":"'+id_nm_msv[0]+'",' + '"adress":"' + id_nm_msv[1]  +'",' + '"type_action":"' + id_nm_msv[2]  +'",' + '"amount":"' + id_nm_msv[3]  +'"' +'}';
+      let js = (id_nm_msv.length>4) ? '{"date":"'+id_nm_msv[0]+'",' + '"adress":"' + id_nm_msv[1]  +'",' + '"type_action":"' + id_nm_msv[2]  +'",' + '"amount":"' + id_nm_msv[3]  +'"' + '"name_client":"' + id_nm_msv[4]  +'"' + '"sex_client":"' + id_nm_msv[5]  +'"' + '"phone":"' + id_nm_msv[6]  +'"' +'}':
+      '{"date":"'+id_nm_msv[0]+'",' + '"adress":"' + id_nm_msv[1]  +'",' + '"type_action":"' + id_nm_msv[2]  +'",' + '"amount":"' + id_nm_msv[3]  +'"' +'}'
       window.Telegram.WebApp.sendData(js);
       /*
       alert("Спасибо, данные сохранены на сервер");
